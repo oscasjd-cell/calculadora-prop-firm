@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora Prop Firm</title>
+<title>Calculadora de nuestro plan · MFFU Rapid 50K</title>
 <style>
 :root{--bg:#0a0a0f;--card:#14141f;--card2:#1a1a2a;--border:#2a2a3a;--text:#e0e0e8;--muted:#8888a0;--primary:#6366f1;--primary2:#818cf8;--glow:rgba(99,102,241,.3);--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--accent:#8b5cf6;--grad:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);--gcard:linear-gradient(145deg,#14141f 0%,#1a1a2a 100%)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,6 +32,7 @@ select{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--b
 .btn{border:0;border-radius:.7rem;padding:8px 14px;font-weight:600;cursor:pointer;color:#fff;font-size:.9rem}
 .btn-add{background:var(--grad)}.btn-add:hover{filter:brightness(1.15)}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-ghost:hover{border-color:var(--primary)}
+.btn-preset{background:linear-gradient(135deg,#10b981,#34d399);color:#062}
 .btn-remove{background:transparent;color:var(--muted);font-size:1.1rem;padding:4px 10px}.btn-remove:hover{color:var(--danger)}
 .phase{background:var(--bg);border:1px solid var(--border);border-radius:1rem;padding:16px;margin-bottom:14px}
 .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -63,233 +64,237 @@ canvas{width:100%;height:220px;display:block}
 .how{font-size:.88rem;color:#c8c8d4}.how h3{color:var(--text);margin:12px 0 6px;font-size:1rem}.how li{margin:3px 0 3px 18px}.how code{background:var(--bg);padding:1px 5px;border-radius:4px;color:var(--primary2)}
 footer{text-align:center;color:var(--muted);padding:24px 0;font-size:.85rem}
 .legend{display:flex;gap:14px;font-size:.78rem;color:var(--muted);margin-bottom:4px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
-@media(max-width:700px){#app{padding:14px}.section{padding:16px}.iu input,select{font-size:16px;min-height:44px}.btn{min-height:40px}.toggle span{padding:8px 12px}.chk input{width:22px;height:22px}}
+
+.hint{display:block;font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.3}
+.blk{background:var(--bg);border:1px solid var(--border);border-radius:1rem;padding:14px;margin-bottom:14px}
+.blk h3{font-size:1rem;margin-bottom:4px}.blk p.d{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.out{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--border);font-size:.92rem}
+.out:last-child{border:0}.out b{white-space:nowrap}
+.big{font-size:1.9rem;font-weight:700}
+.scen{display:flex;gap:8px;flex-wrap:wrap}.scen .btn.on{background:var(--grad);border-color:transparent}
+.warn{font-size:.8rem;color:var(--warning);margin-top:8px}
+.how dt{font-weight:600;margin-top:8px}.how dd{margin-left:0;color:#c8c8d4;font-size:.86rem}
+@media(max-width:950px){.results{order:-1}}
+@media(max-width:600px){#app{padding:10px}.section{padding:14px;border-radius:1rem}.logo{font-size:1.6rem}.row3,.row4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
-  <div class="logo">📊 Calculadora Prop Firm</div>
-  <p class="tagline">Calculadora de Probabilidad para Cuentas de Fondeo</p>
+  <div class="logo">📊 Calculadora de nuestro plan</div>
+  <p class="tagline">MFFU Rapid 50K · Evaluación + día colchón + días chicos · reglas reales de retiro</p>
 </header>
 <div class="layout">
 <div class="col">
-  <button class="btn btn-ghost" id="loadPlanBtn" style="align-self:flex-start">Cargar nuestro plan (MFFU Rapid 50K)</button>
   <section class="section">
-    <h2>💰 Costes</h2>
-    <div class="row">
-      <div class="ig"><label>Evaluación</label><div class="iu"><span class="u">$</span><input type="number" id="evaluationCost" value="80" min="0" step="1"></div></div>
-      <div class="ig"><label>Activación</label><div class="iu"><span class="u">$</span><input type="number" id="activationCost" value="0" min="0" step="1"></div></div>
+    <h2>⚡ Escenario de los días chicos</h2>
+    <div class="scen"><button class="btn btn-ghost on" id="scBT">Backtest (90%)</button><button class="btn btn-ghost" id="scPR">Prudente (84%)</button><button class="btn btn-ghost" id="scReset">Restaurar todo</button></div>
+    <span class="hint" style="margin-top:8px">Backtest: 90.45% TP / 7.30% SL / 2.25% manual (TradingView avisó de posible look-ahead). Prudente: 84% / 14% / 2%.</span>
+  </section>
+
+  <section class="section">
+    <h2>💰 Evaluación</h2>
+    <div class="row"><div class="ig"><label for="price">Precio de la Evaluación</label><div class="iu"><span class="u">$</span><input type="number" id="price" value="125" step="any"></div><span class="hint">Lo que pagas por cada intento</span></div></div>
+    <div class="blk"><h3>Reglas de la Evaluación</h3><p class="d">Lo que pide MFFU para aprobar.</p>
+      <div class="row row4"><div class="ig"><label for="e_target">Objetivo</label><div class="iu"><span class="u">$</span><input type="number" id="e_target" value="3000" step="any"></div><span class="hint">Ganancia para aprobar</span></div><div class="ig"><label for="e_mll">Pérdida máxima (MLL)</label><div class="iu"><span class="u">$</span><input type="number" id="e_mll" value="2000" step="any"></div><span class="hint">Fin de día (EOD)</span></div><div class="ig"><label for="e_cons">Consistencia</label><div class="iu"><input type="number" id="e_cons" value="50" step="any"><span class="u">%</span></div><span class="hint">Ningún día > este % del total</span></div><div class="ig"><label for="e_minDays">Días mínimos</label><div class="iu"><input type="number" id="e_minDays" value="2" step="any"></div><span class="hint">Días operados para aprobar</span></div></div></div>
+    <div class="blk"><h3>Trade diario de la Evaluación</h3><p class="d">10 MNQ · TP 75 pts / SL 100 pts · backtest 187 días.</p>
+<div class="row"><div class="ig"><label for="e_tp">Ganancia si toca TP</label><div class="iu"><span class="u">$</span><input type="number" id="e_tp" value="1500" step="any"></div><span class="hint">Dólares que ganas el día que sale el take profit</span></div><div class="ig"><label for="e_sl">Pérdida si toca SL</label><div class="iu"><span class="u">$</span><input type="number" id="e_sl" value="2000" step="any"></div><span class="hint">Dólares que pierdes el día que salta el stop</span></div></div>
+<div class="row row3"><div class="ig"><label for="e_pTP">% días TP</label><div class="iu"><input type="number" id="e_pTP" value="52.9" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan TP</span></div><div class="ig"><label for="e_pSL">% días SL</label><div class="iu"><input type="number" id="e_pSL" value="40.1" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan SL</span></div><div class="ig"><label>% cierre manual</label><div class="iu"><input type="text" id="e_pman" readonly tabindex="-1"><span class="u">%</span></div><span class="hint">Se calcula solo: 100 − TP − SL</span></div></div>
+<div class="row"><div class="ig"><label for="e_manual">Resultado medio cierre manual</label><div class="iu"><span class="u">$</span><input type="number" id="e_manual" value="-322" step="any"></div><span class="hint">Días que no tocan ni TP ni SL y se cierran a las 15:45 ET (media del backtest)</span></div><div class="ig"><label for="e_com">Comisión por día</label><div class="iu"><span class="u">$</span><input type="number" id="e_com" value="24.8" step="any"></div><span class="hint">Se resta cada día operado (ida y vuelta)</span></div></div></div>
+  </section>
+
+  <section class="section">
+    <h2>🏦 Cuenta fondeada (Sim Funded)</h2>
+    <div class="blk"><h3>Día colchón (1º de la fondeada)</h3><p class="d">10 MNQ · TP 100 / SL 100 pts · se repite hasta TP o muerte · backtest 179 días.</p>
+<div class="row"><div class="ig"><label for="c_tp">Ganancia si toca TP</label><div class="iu"><span class="u">$</span><input type="number" id="c_tp" value="2000" step="any"></div><span class="hint">Dólares que ganas el día que sale el take profit</span></div><div class="ig"><label for="c_sl">Pérdida si toca SL</label><div class="iu"><span class="u">$</span><input type="number" id="c_sl" value="2000" step="any"></div><span class="hint">Dólares que pierdes el día que salta el stop</span></div></div>
+<div class="row row3"><div class="ig"><label for="c_pTP">% días TP</label><div class="iu"><input type="number" id="c_pTP" value="46.4" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan TP</span></div><div class="ig"><label for="c_pSL">% días SL</label><div class="iu"><input type="number" id="c_pSL" value="44.1" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan SL</span></div><div class="ig"><label>% cierre manual</label><div class="iu"><input type="text" id="c_pman" readonly tabindex="-1"><span class="u">%</span></div><span class="hint">Se calcula solo: 100 − TP − SL</span></div></div>
+<div class="row"><div class="ig"><label for="c_manual">Resultado medio cierre manual</label><div class="iu"><span class="u">$</span><input type="number" id="c_manual" value="-174" step="any"></div><span class="hint">Días que no tocan ni TP ni SL y se cierran a las 15:45 ET (media del backtest)</span></div><div class="ig"><label for="c_com">Comisión por día</label><div class="iu"><span class="u">$</span><input type="number" id="c_com" value="24.8" step="any"></div><span class="hint">Se resta cada día operado (ida y vuelta)</span></div></div></div>
+    <div class="blk"><h3>Días chicos</h3><p class="d">6 MNQ · TP 16,75 / SL 166,75 pts · importes ya netos de comisión · backtest 178 días.</p>
+<div class="row"><div class="ig"><label for="s_tp">Ganancia si toca TP</label><div class="iu"><span class="u">$</span><input type="number" id="s_tp" value="193.56" step="any"></div><span class="hint">Dólares que ganas el día que sale el take profit</span></div><div class="ig"><label for="s_sl">Pérdida si toca SL</label><div class="iu"><span class="u">$</span><input type="number" id="s_sl" value="2008.44" step="any"></div><span class="hint">Dólares que pierdes el día que salta el stop</span></div></div>
+<div class="row row3"><div class="ig"><label for="s_pTP">% días TP</label><div class="iu"><input type="number" id="s_pTP" value="90.45" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan TP</span></div><div class="ig"><label for="s_pSL">% días SL</label><div class="iu"><input type="number" id="s_pSL" value="7.3" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan SL</span></div><div class="ig"><label>% cierre manual</label><div class="iu"><input type="text" id="s_pman" readonly tabindex="-1"><span class="u">%</span></div><span class="hint">Se calcula solo: 100 − TP − SL</span></div></div>
+<div class="row"><div class="ig"><label for="s_manual">Resultado medio cierre manual</label><div class="iu"><span class="u">$</span><input type="number" id="s_manual" value="-589.44" step="any"></div><span class="hint">Días que no tocan ni TP ni SL y se cierran a las 15:45 ET (media del backtest)</span></div><div class="ig"><label for="s_com">Comisión por día</label><div class="iu"><span class="u">$</span><input type="number" id="s_com" value="0" step="any"></div><span class="hint">Se resta cada día operado (ida y vuelta)</span></div></div></div>
+    <div class="blk"><h3>Reglas de la fondeada y retiros</h3><p class="d">Reglas reales de MFFU Rapid 50K.</p>
+      <div class="row row3"><div class="ig"><label for="f_mll">Pérdida máxima fondeada</label><div class="iu"><span class="u">$</span><input type="number" id="f_mll" value="2000" step="any"></div><span class="hint">Trailing intradía</span></div><div class="ig"><label for="f_lock">El límite se fija en</label><div class="iu"><span class="u">$</span><input type="number" id="f_lock" value="100" step="any"></div><span class="hint">Beneficio donde deja de subir</span></div><div class="ig"><label for="f_buffer">Colchón para retirar</label><div class="iu"><span class="u">$</span><input type="number" id="f_buffer" value="2100" step="any"></div><span class="hint">Solo se retira lo que pase de aquí</span></div><div class="ig"><label for="f_minW">Retiro mínimo</label><div class="iu"><span class="u">$</span><input type="number" id="f_minW" value="500" step="any"></div><span class="hint">Por cada retiro</span></div><div class="ig"><label for="f_split">Reparto para ti</label><div class="iu"><input type="number" id="f_split" value="90" step="any"><span class="u">%</span></div><span class="hint">Tu parte de cada retiro</span></div></div>
+      <div class="row">
+        <div class="ig"><label for="f_policy">Cuándo retirar</label><select id="f_policy">
+          <option value="1">Plan: colchón + 4 días chicos y luego retirar todo lo que pase de $2.100</option>
+          <option value="2">Retirar en cuanto se pueda (exceso ≥ mínimo)</option></select>
+          <span class="hint">Después del primer retiro, en ambos casos se sigue con días chicos y se retira cada vez que el exceso sobre $2.100 llegue al mínimo.</span></div>
+        <div class="ig"><label for="f_smallBefore">Días chicos antes del 1er retiro</label><div class="iu"><input type="number" id="f_smallBefore" value="4" step="any"></div><span class="hint">Solo para la opción "Plan"</span></div>
+      </div>
+      <div class="row"><div class="ig"><label for="f_maxDays">Máximo de días de fondeo</label><div class="iu"><input type="number" id="f_maxDays" value="60" step="any"></div><span class="hint">Se corta la simulación aquí</span></div> <div class="ig"><label for="sims">Simulaciones</label><div class="iu"><input type="number" id="sims" value="100000" step="any"></div><span class="hint">Más = más preciso (y más lento)</span></div></div>
     </div>
   </section>
-  <section class="section">
-    <div class="sh"><h2>📋 Fases</h2><button class="btn btn-add" id="addPhaseBtn">+ Fase</button></div>
-    <div id="phasesContainer"></div>
+
+  <section class="section how">
+    <h2>❓ Qué significa cada casilla</h2>
+    <dl>
+      <dt>Precio de la Evaluación</dt><dd>Lo que pagas por cada intento. Con el código CLUB (40%) la de 50K sale ~$125; la primera puede salir más barata.</dd>
+      <dt>Objetivo / Pérdida máxima (MLL) / Consistencia / Días mínimos</dt><dd>Para aprobar hay que ganar $3.000 sin bajar $2.000 desde el mejor cierre diario, en al menos 2 días, y ningún día puede aportar más del 50% de la ganancia total. Si un día pesa demasiado, no suspendes: sigues operando hasta cumplirlo.</dd>
+      <dt>Ganancia TP / Pérdida SL</dt><dd>Lo que ganas o pierdes el día que el precio toca tu take profit o tu stop. Se opera una vez al día.</dd>
+      <dt>% días TP / % días SL / % cierre manual</dt><dd>Frecuencias del backtest. Los días que no tocan ni TP ni SL se cierran a mano a las 15:45 ET con el resultado medio indicado.</dd>
+      <dt>Comisión por día</dt><dd>Coste de entrar y salir. Supuesto: ~$1,24 por micro y lado → 10 MNQ ≈ $24,80. Los días chicos ya vienen netos del backtest (comisión 0 aquí).</dd>
+      <dt>Día colchón</dt><dd>El primer día de la fondeada se busca +$2.000 de golpe. Si cierra a mano, se repite al día siguiente; si toca SL, la cuenta muere.</dd>
+      <dt>Días chicos</dt><dd>Después del colchón: operaciones pequeñas (TP corto, SL grande) para ir sumando hasta poder retirar.</dd>
+      <dt>Pérdida máxima fondeada y "se fija en"</dt><dd>El límite sigue a tu máximo (también dentro del día) a $2.000 de distancia hasta llegar a +$100; ahí se queda fijo para siempre, aunque retires. Si el saldo toca ese suelo, la cuenta muere.</dd>
+      <dt>Colchón para retirar / Retiro mínimo / Reparto</dt><dd>Solo puedes retirar lo que pase de $2.100 de beneficio, y como mínimo $500 cada vez. Te quedas el 90%. Tras retirar, el saldo vuelve a $2.100: solo te separan $2.000 del suelo, así que un SL de días chicos (−$2.008) mata la cuenta justo después de un retiro.</dd>
+      <dt>Máximo de días de fondeo</dt><dd>La simulación se corta ahí (aunque la cuenta siga viva) para no alargarla sin fin.</dd>
+      <dt>Simulaciones</dt><dd>Cuántas Evaluaciones "imaginarias" se juegan con estas probabilidades. Más = resultado más estable.</dd>
+    </dl>
+    <p class="hint" style="font-size:.8rem;margin-top:10px">Supuestos: un solo trade por día; el día TP va directo al TP y el día SL directo al SL (no se modela el ir y venir dentro del día); en la Evaluación un SL siempre quema la cuenta (SL + comisión supera el MLL); el MLL de la Evaluación sube con el mejor cierre diario sin fijarse; cada Evaluación es independiente.</p>
   </section>
 </div>
+
 <div class="results">
   <section class="section">
     <h2>📈 Resultados</h2>
     <div class="card">
-      <div class="mainv"><span class="l">Probabilidad de Éxito</span><span class="v" id="aProb">--%</span></div>
-      <div class="bar"><div class="fill" id="aFill" style="width:0"></div></div>
-      <div class="kv"><div><div class="k">Retorno Esperado</div><div class="val" id="aER">--</div></div><div><div class="k">ROI</div><div class="val" id="aROI">--x</div></div></div>
-      <div class="bd" id="aBD"></div>
+      <div class="mainv"><span class="l">Ganancia media por Evaluación comprada</span></div>
+      <div class="big" id="o_gain">--</div>
+      <div class="extra" id="o_roi"></div>
     </div>
-    <canvas id="chart" width="720" height="440"></canvas>
+    <div class="card" id="outs"></div>
+    <div class="warn" id="o_warn"></div>
+    <div class="extra" id="o_n"></div>
   </section>
 </div>
 </div>
+<footer>Simulación Monte Carlo con los datos del backtest (TradingView MNQ1! 15m, dic-2025 → sep-2026). No es una garantía de resultados.</footer>
 </div>
-
-<template id="phaseTpl">
-<div class="phase">
-  <div class="ph">
-    <div class="phl"><span class="badge"><span class="pn">1</span></span>
-      <div class="toggle">
-        <label><input type="radio" value="evaluation" checked><span>Evaluación</span></label>
-        <label><input type="radio" value="withdrawal"><span>Fondeada</span></label>
-      </div>
-    </div>
-    <button class="btn btn-remove" title="Eliminar fase">✕</button>
-  </div>
-  <div class="row row3">
-    <div class="ig"><label>Drawdown</label><div class="iu"><span class="u">$</span><input type="number" data-k="maxDrawdown" value="2000" min="0" step="100"></div></div>
-    <div class="ig"><label>Objetivo</label><div class="iu"><span class="u">$</span><input type="number" data-k="target" value="3000" min="0" step="100"></div></div>
-    <div class="ig"><label>Consistencia</label><div class="iu"><input type="number" data-k="consistency" value="50" min="0" max="100" step="5"><span class="u">%</span></div></div>
-  </div>
-  <div class="row">
-    <div class="ig"><label>Tipo DD</label><select data-k="drawdownType"><option value="eod">EOD</option><option value="trailing">Trailing</option><option value="static">Estático</option></select></div>
-    <label class="chk"><input type="checkbox" data-k="ddLocks" checked><span>DD se fija al superar DD inicial</span></label>
-  </div>
-  <div class="wf hidden">
-    <div class="divider"></div>
-    <div class="row row3">
-      <div class="ig"><label>Payout Cap</label><div class="iu"><input type="number" data-k="payoutCap" value="50" min="0" max="100" step="5"><span class="u">%</span></div></div>
-      <div class="ig"><label>Límite</label><div class="iu"><span class="u">$</span><input type="number" data-k="payoutLimit" value="1000" min="0" step="100"></div></div>
-      <div class="ig"><label>Split</label><div class="iu"><input type="number" data-k="split" value="80" min="0" max="100" step="5"><span class="u">%</span></div></div>
-    </div>
-  </div>
-</div>
-</template>
 
 <script>
 /*CORE-START*/
-var PropCore = (function () {
-  // ---------- Réplica exacta del modelo de calc.tradesfera.com ----------
-  function be(d, t) { return d <= 0 || t <= 0 ? 0 : d / (d + t); }       // DD EOD / estático
-  function xe(d, t) { return d <= 0 || t <= 0 ? 0 : Math.exp(-t / d); }   // DD trailing
-  function nDays(c) { return c <= 0 ? 1 : Math.ceil(100 / c); }
-
-  function evalPhase(p, idx) {
-    var D = p.maxDrawdown, T = p.target, c = p.consistency, locks = p.ddLocks, type = p.drawdownType;
-    var n = nDays(c), prob = 1, acc = 0, dd = D, days = [];
-    for (var u = 1; u <= n; u++) {
-      var f = c <= 0 ? T : Math.min(T * c / 100, T - acc);
-      var locked = type === "trailing" && locks && acc >= D;
-      var pr = type === "trailing" && !locked ? xe(dd, f) : be(dd, f);
-      prob *= pr;
-      days.push({ day: u, currentDD: dd, dailyTarget: f, cumulativeProfit: acc, survivalProbability: pr });
-      acc += f;
-      if (type === "static" || locked) dd = D + acc;
-      else if (type === "eod" && locks && acc >= D) dd = D + (acc - D);
-      else dd = D;
-    }
-    return { phaseIndex: idx, phaseName: "Fase " + (idx + 1) + " (Evaluación)", probability: prob, expectedReturn: 0, dailyBreakdown: days };
+var PlanCore = (function () {
+  function rng(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  // Resultado de un día: TP, SL o cierre manual (15:45 ET). b = bloque {tp, sl, pTP, pSL, manual, com}
+  function day(b, r) {
+    var u = r() * 100;
+    if (u < b.pTP) return { k: "tp", d: b.tp - b.com };
+    if (u < b.pTP + b.pSL) return { k: "sl", d: -b.sl - b.com };
+    return { k: "man", d: b.manual - b.com };
   }
-
-  function withdrawalPhase(p, idx) {
-    var D = p.maxDrawdown, T = p.target, cap = p.payoutCap, lim = p.payoutLimit, split = p.split,
-        c = p.consistency, type = p.drawdownType, locks = p.ddLocks;
-    var days = [], n = nDays(c), prob = 1, dd = D, acc = 0;
-    if (n > 1) {
-      var w = T * c / 100;
-      for (var s = 1; s <= n; s++) {
-        var A = T - acc, P = Math.min(w, A);
-        if (P <= 0) break;
-        var locked = type === "trailing" && locks && acc >= D;
-        var pr = type === "trailing" && !locked ? xe(dd, P) : be(dd, P);
-        prob *= pr;
-        days.push({ day: s, currentDD: dd, dailyTarget: P, cumulativeProfit: acc, survivalProbability: pr });
-        acc += P;
-        dd = (type === "static" || locked) ? D + acc : D;
+  // EVALUACIÓN: MLL EOD (sube con el mejor cierre diario). Un SL = cuenta quemada (SL + comisión supera el MLL).
+  function simEval(c, r) {
+    var e = c.eval, pnl = 0, peak = 0, floor = -e.mll, best = 0;
+    for (var d = 1; d <= 300; d++) {
+      var o = day(e, r);
+      if (o.k === "sl") return { pass: false, days: d };
+      pnl += o.d;
+      if (pnl <= floor) return { pass: false, days: d };
+      if (o.d > best) best = o.d;
+      if (pnl > peak) peak = pnl;
+      floor = Math.max(floor, peak - e.mll);
+      if (d >= e.minDays && pnl >= e.target && best <= (e.cons / 100) * pnl + 1e-9) return { pass: true, days: d };
+    }
+    return { pass: false, days: 300 };
+  }
+  // FONDEADA: MLL trailing intradía de $2000 que se fija en +$100 y ya no se mueve (tampoco tras retirar).
+  function simFunded(c, r) {
+    var f = c.funded, pnl = 0, peak = 0, floor = -f.mll, d = 0, nW = 0, net = 0, firstDay = 0, small = 0;
+    function upd() { if (pnl > peak) peak = pnl; floor = Math.max(floor, Math.min(peak - f.mll, f.lock)); }
+    // Día colchón: se repite hasta TP (o muerte)
+    for (;;) {
+      if (d >= f.maxDays) return { cushion: false, nW: 0, net: 0, firstDay: 0, days: d, alive: true };
+      var o = day(c.cushion, r); d++;
+      pnl += o.d;
+      if (pnl <= floor) return { cushion: false, nW: 0, net: 0, firstDay: 0, days: d, alive: false };
+      upd();
+      if (o.k === "tp") break;
+    }
+    // Días chicos + retiros
+    while (d < f.maxDays) {
+      var q = day(c.small, r); d++; small++;
+      pnl += q.d;
+      if (pnl <= floor) return { cushion: true, nW: nW, net: net, firstDay: firstDay, days: d, alive: false };
+      upd();
+      var excess = pnl - f.buffer;
+      var allowed = f.policy === 2 || small >= f.smallBefore || nW > 0;
+      if (allowed && excess >= f.minW) {
+        pnl -= excess; net += excess * f.split / 100; nW++;
+        if (nW === 1) firstDay = d;
       }
-    } else {
-      var pr1 = type === "trailing" ? xe(D, T) : be(D, T);
-      prob = pr1;
-      days.push({ day: 1, currentDD: D, dailyTarget: T, cumulativeProfit: 0, survivalProbability: pr1 });
     }
-    var m = Math.min(T * (cap / 100), lim), b = m * (split / 100), x = T - m, y = T - x, v;
-    if (type === "trailing") v = x > 0 ? xe(x, y) : 0; else v = x > 0 ? be(x, y) : 0;
-    var k = 0;
-    if (v > 0 && v < 1) k = v * b / (1 - v);
-    return { phaseIndex: idx, phaseName: "Fase " + (idx + 1) + " (Retiro)", probability: prob, expectedReturn: b + k, dailyBreakdown: days,
-             firstPayoutNet: b, repeatProb: v };
+    return { cushion: true, nW: nW, net: net, firstDay: firstDay, days: d, alive: true };
   }
-
-  // Igual que el sitio: cap/límite/split a 0 o vacío -> 50 / 1000 / 80
-  function siteSanitize(p) {
-    var q = Object.assign({}, p);
-    if (q.type === "withdrawal") { q.payoutCap = q.payoutCap || 50; q.payoutLimit = q.payoutLimit || 1000; q.split = q.split || 80; }
-    return q;
+  function run(c) {
+    var N = c.sims, r = rng(c.seed || 1), evalOk = 0, cushOk = 0, withW = 0, sumW = 0, sumNet = 0, sumFirstDay = 0, aliveEnd = 0, sumDays = 0, sumEvalDays = 0;
+    for (var i = 0; i < N; i++) {
+      var e = simEval(c, r); sumEvalDays += e.days;
+      if (!e.pass) continue;
+      evalOk++;
+      var f = simFunded(c, r);
+      if (f.cushion) cushOk++;
+      if (f.nW > 0) { withW++; sumFirstDay += f.firstDay; }
+      if (f.alive) aliveEnd++;
+      sumW += f.nW; sumNet += f.net; sumDays += f.days;
+    }
+    var pFirst = withW / N, netPerEval = sumNet / N, gain = netPerEval - c.price;
+    return {
+      sims: N, pEval: evalOk / N, pCushion: evalOk ? cushOk / evalOk : 0, pFirstPerEval: pFirst,
+      pFirstPerFunded: evalOk ? withW / evalOk : 0,
+      avgWithdrawalsFunded: evalOk ? sumW / evalOk : 0, avgNetFunded: evalOk ? sumNet / evalOk : 0,
+      netPerEval: netPerEval, gainPerEval: gain, roi: c.price > 0 ? gain / c.price : 0,
+      evalsToFirst: pFirst > 0 ? 1 / pFirst : Infinity, spendToFirst: pFirst > 0 ? c.price / pFirst : Infinity,
+      daysToFirst: withW ? sumFirstDay / withW : 0, avgFundedDays: evalOk ? sumDays / evalOk : 0,
+      aliveAtCap: evalOk ? aliveEnd / evalOk : 0, avgEvalDays: sumEvalDays / N
+    };
   }
-
-  function analytic(cfg) {
-    var phases = [], total = 1, evalProb = 1, ret = 0;
-    cfg.phases.forEach(function (p0, i) {
-      var p = siteSanitize(p0), r;
-      if (p.type === "withdrawal") { r = withdrawalPhase(p, i); ret = r.expectedReturn; }
-      else { r = evalPhase(p, i); evalProb *= r.probability; }
-      phases.push(r); total *= r.probability;
-    });
-    var cost = cfg.evalCost + evalProb * cfg.activationCost;
-    var er = total * ret - cost;
-    return { phases: phases, totalProbability: total, expectedReturn: er, roi: cost > 0 ? er / cost : 0, cost: cost, grossReturnIfSuccess: ret };
-  }
-
-
-  return { analytic: analytic };
+  var DEFAULTS = {
+    price: 125, sims: 100000, seed: 2026,
+    eval: { target: 3000, mll: 2000, cons: 50, minDays: 2, tp: 1500, sl: 2000, pTP: 52.9, pSL: 40.1, manual: -322, com: 24.8 },
+    cushion: { tp: 2000, sl: 2000, pTP: 46.4, pSL: 44.1, manual: -174, com: 24.8 },
+    small: { tp: 193.56, sl: 2008.44, pTP: 90.45, pSL: 7.30, manual: -589.44, com: 0 },
+    funded: { mll: 2000, lock: 100, buffer: 2100, minW: 500, split: 90, policy: 1, smallBefore: 4, maxDays: 60 }
+  };
+  var SCEN = { backtest: { pTP: 90.45, pSL: 7.30 }, prudente: { pTP: 84, pSL: 14 } };
+  return { run: run, simEval: simEval, simFunded: simFunded, DEFAULTS: DEFAULTS, SCEN: SCEN };
 })();
-if (typeof module !== "undefined") module.exports = PropCore;
+if (typeof module !== "undefined") module.exports = PlanCore;
 /*CORE-END*/
 </script>
 <script>
-(function () {
-  var C = PropCore, cont = document.getElementById("phasesContainer"), tpl = document.getElementById("phaseTpl"), uid = 0;
-  function addPhase(funded, d) {
-    var card = tpl.content.cloneNode(true).querySelector(".phase"), id = uid++;
-    card.querySelectorAll('input[type="radio"]').forEach(function (r) {
-      r.name = "pt-" + id;
-      r.addEventListener("change", function () { card.querySelector(".wf").classList.toggle("hidden", r.value !== "withdrawal"); });
-    });
-    if (funded) { card.querySelector('input[value="withdrawal"]').checked = true; card.querySelector(".wf").classList.remove("hidden"); }
-    card.querySelector(".btn-remove").addEventListener("click", function () { card.remove(); renumber(); schedule(); });
-    if (d) Object.keys(d).forEach(function (k) {
-      var el = card.querySelector('[data-k="' + k + '"]');
-      if (el.type === "checkbox") el.checked = d[k]; else el.value = d[k];
-    });
-    cont.appendChild(card); renumber();
-  }
-  function renumber() { cont.querySelectorAll(".phase").forEach(function (c, i) { c.querySelector(".pn").textContent = i + 1; }); }
-  function v(card, k) { return parseFloat(card.querySelector('[data-k="' + k + '"]').value) || 0; }
-  function readPhase(card) {
-    return { type: card.querySelector('input[value="withdrawal"]').checked ? "withdrawal" : "evaluation",
-      maxDrawdown: v(card, "maxDrawdown"), target: v(card, "target"), consistency: v(card, "consistency"),
-      drawdownType: card.querySelector('[data-k="drawdownType"]').value, ddLocks: card.querySelector('[data-k="ddLocks"]').checked,
-      payoutCap: v(card, "payoutCap"), payoutLimit: v(card, "payoutLimit"), split: v(card, "split") };
-  }
-  function money(x) { return (x < 0 ? "−$" : "$") + Math.abs(x).toFixed(2); }
-  function drawChart(phases) {
-    var cv = document.getElementById("chart"), ctx = cv.getContext("2d"), W = cv.width, H = cv.height;
-    ctx.clearRect(0, 0, W, H);
-    var L = 60, R = 16, Tp = 16, B = 50, ph = H - Tp - B, pw = W - L - R;
-    ctx.font = "20px Inter, sans-serif"; ctx.strokeStyle = "#2a2a3a"; ctx.lineWidth = 1;
-    for (var g = 0; g <= 100; g += 20) {
-      var y = Tp + ph - ph * g / 100;
-      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(W - R, y); ctx.stroke();
-      ctx.fillStyle = "#8888a0"; ctx.textAlign = "right"; ctx.fillText(g + "%", L - 8, y + 6);
-    }
-    var n = phases.length; if (!n) return;
-    var slot = pw / n, bw = Math.min(90, slot * 0.6);
-    phases.forEach(function (p, i) {
-      var cx = L + slot * i + slot / 2, h = ph * p.probability, x = cx - bw / 2;
-      ctx.fillStyle = "hsl(" + (250 + i * 30) + ", 70%, 60%)"; ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(x, Tp + ph - h, bw, h, 8); else ctx.rect(x, Tp + ph - h, bw, h);
-      ctx.fill();
-      ctx.fillStyle = "#e0e0e8"; ctx.textAlign = "center"; ctx.font = "18px Inter, sans-serif";
-      ctx.fillText((p.probability * 100).toFixed(2) + "%", cx, Tp + ph - h - 6);
-      ctx.fillStyle = "#8888a0"; ctx.font = "19px Inter, sans-serif"; ctx.fillText(p.phaseName, cx, H - 18);
-    });
-  }
-  function calc() {
-    var cards = cont.querySelectorAll(".phase"); if (!cards.length) return;
-    var r = C.analytic({ evalCost: parseFloat(document.getElementById("evaluationCost").value) || 0,
-      activationCost: parseFloat(document.getElementById("activationCost").value) || 0,
-      phases: Array.prototype.map.call(cards, readPhase) });
-    var t = r.totalProbability * 100;
-    document.getElementById("aProb").textContent = t.toFixed(2) + "%";
-    document.getElementById("aFill").style.width = Math.min(100, t) + "%";
-    var e = document.getElementById("aER"); e.textContent = money(r.expectedReturn); e.className = "val " + (r.expectedReturn >= 0 ? "pos" : "neg");
-    var o = document.getElementById("aROI"); o.textContent = r.roi.toFixed(2) + "x"; o.className = "val " + (r.roi >= 0 ? "pos" : "neg");
-    var bd = document.getElementById("aBD"); bd.innerHTML = "<h4>Desglose por Fase</h4>";
-    r.phases.forEach(function (p) { bd.innerHTML += '<div class="bdi"><span>' + p.phaseName + "</span><b>" + (p.probability * 100).toFixed(2) + "%</b></div>"; });
-    drawChart(r.phases);
-  }
-  var tmr; function schedule() { clearTimeout(tmr); tmr = setTimeout(calc, 300); }
-  document.getElementById("addPhaseBtn").addEventListener("click", function () { addPhase(false); schedule(); });
-  document.getElementById("app").addEventListener("input", schedule);
-  document.getElementById("app").addEventListener("change", schedule);
-  // Nuestro plan expresado con los campos del sitio: Eval / Día colchón (sin retiro) / Días chicos + retiros
-  document.getElementById("loadPlanBtn").addEventListener("click", function () {
-    document.getElementById("evaluationCost").value = 104.5;
-    document.getElementById("activationCost").value = 0;
-    cont.innerHTML = "";
-    addPhase(false, { maxDrawdown: 2000, target: 3000, consistency: 50, drawdownType: "eod", ddLocks: true });
-    addPhase(false, { maxDrawdown: 2000, target: 2000, consistency: 0, drawdownType: "trailing", ddLocks: true });
-    addPhase(true, { maxDrawdown: 6650, target: 2800, consistency: 0, drawdownType: "static", ddLocks: true, payoutCap: 50, payoutLimit: 1400, split: 90 });
-    calc();
-  });
-  addPhase(false); addPhase(true); calc();
+(function(){
+var C=PlanCore,D=C.DEFAULTS;
+function g(id){return document.getElementById(id);}
+function n(id){var v=parseFloat(g(id).value);return isFinite(v)?v:0;}
+function blk(p){return{tp:n(p+'_tp'),sl:n(p+'_sl'),pTP:n(p+'_pTP'),pSL:n(p+'_pSL'),manual:n(p+'_manual'),com:n(p+'_com')};}
+function man(){['e','c','s'].forEach(function(p){var m=100-n(p+'_pTP')-n(p+'_pSL');var el=g(p+'_pman');el.value=m.toFixed(2);el.style.color=m<-1e-9?'#ef4444':'';});}
+function cfg(){return{price:n('price'),sims:Math.max(1000,Math.round(n('sims'))),seed:D.seed,
+ eval:Object.assign(blk('e'),{target:n('e_target'),mll:n('e_mll'),cons:n('e_cons'),minDays:n('e_minDays')}),
+ cushion:blk('c'),small:blk('s'),
+ funded:{mll:n('f_mll'),lock:n('f_lock'),buffer:n('f_buffer'),minW:n('f_minW'),split:n('f_split'),policy:parseInt(g('f_policy').value),smallBefore:n('f_smallBefore'),maxDays:Math.max(1,n('f_maxDays'))}};}
+function money(v){return isFinite(v)?(v<0?'−$':'$')+Math.abs(v).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';}
+function pct(v){return (v*100).toFixed(1).replace('.',',')+'%';}
+function calc(){
+ man();var c=cfg(),r=C.run(c);
+ var gEl=g('o_gain');gEl.textContent=money(r.gainPerEval);gEl.className='big '+(r.gainPerEval>=0?'pos':'neg');
+ g('o_roi').textContent='ROI: '+r.roi.toFixed(2).replace('.',',')+'x  (por cada $1 de Evaluación)';
+ var L=[['Probabilidad de pasar la Evaluación',pct(r.pEval)],
+  ['Probabilidad de superar el día colchón (si estás fondeado)',pct(r.pCushion)],
+  ['Probabilidad de cobrar al menos un retiro (por Evaluación comprada)',pct(r.pFirstPerEval)],
+  ['Retiros de media por cuenta fondeada',r.avgWithdrawalsFunded.toFixed(2).replace('.',',')],
+  ['Dinero cobrado de media por cuenta fondeada (tu 90%)',money(r.avgNetFunded)],
+  ['Cobrado de media por Evaluación comprada',money(r.netPerEval)],
+  ['Evaluaciones de media hasta el primer cobro',isFinite(r.evalsToFirst)?r.evalsToFirst.toFixed(1).replace('.',','):'—'],
+  ['Gasto medio en Evaluaciones hasta el primer cobro',money(r.spendToFirst)],
+  ['Días de fondeo hasta el primer retiro (con colchón)',r.daysToFirst.toFixed(1).replace('.',',')]];
+ g('outs').innerHTML=L.map(function(x){return '<div class="out"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>';}).join('');
+ var w=[];var e=c.eval;
+ if(2*(e.tp-e.com)<e.target-1e-9) w.push('Ojo: con la comisión, 2 TP dan '+money(2*(e.tp-e.com))+' (< objetivo '+money(e.target)+'): hace falta un 3er TP. Un TP de '+money(e.target/2+e.com)+' bruto lo evitaría.');
+ g('o_warn').textContent=w.join(' ');
+ g('o_n').textContent=r.sims.toLocaleString('es-ES')+' simulaciones · cuentas vivas al llegar al máximo de días: '+pct(r.aliveAtCap);
+}
+function fill(){var map={price:D.price,sims:D.sims};
+ ['e','c','s'].forEach(function(p){var b=p==='e'?D.eval:p==='c'?D.cushion:D.small;['tp','sl','pTP','pSL','manual','com'].forEach(function(k){map[p+'_'+k]=b[k];});});
+ ['target','mll','cons','minDays'].forEach(function(k){map['e_'+k]=D.eval[k];});
+ ['mll','lock','buffer','minW','split','smallBefore','maxDays'].forEach(function(k){map['f_'+k]=D.funded[k];});
+ Object.keys(map).forEach(function(k){g(k).value=map[k];});g('f_policy').value=String(D.funded.policy);}
+function scen(k){g('s_pTP').value=C.SCEN[k].pTP;g('s_pSL').value=C.SCEN[k].pSL;g('scBT').classList.toggle('on',k==='backtest');g('scPR').classList.toggle('on',k==='prudente');calc();}
+g('scBT').onclick=function(){scen('backtest');};g('scPR').onclick=function(){scen('prudente');};
+g('scReset').onclick=function(){fill();scen('backtest');};
+var t;function sch(){clearTimeout(t);t=setTimeout(calc,350);}
+g('app').addEventListener('input',sch);g('app').addEventListener('change',sch);
+fill();calc();
 })();
 </script>
 </body>
