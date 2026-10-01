@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Prop Firm</title>
+<style>
+:root{--bg:#0a0a0f;--card:#14141f;--card2:#1a1a2a;--border:#2a2a3a;--text:#e0e0e8;--muted:#8888a0;--primary:#6366f1;--primary2:#818cf8;--glow:rgba(99,102,241,.3);--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--accent:#8b5cf6;--grad:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);--gcard:linear-gradient(145deg,#14141f 0%,#1a1a2a 100%)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 20% 80%,rgba(99,102,241,.08) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(139,92,246,.08) 0%,transparent 50%);pointer-events:none;z-index:-1}
+#app{max-width:1240px;margin:0 auto;padding:24px}
+header{text-align:center;padding:28px 0 20px}
+.logo{font-size:2.2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tagline{color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:28px;align-items:start}
+.col{min-width:0;display:flex;flex-direction:column;gap:20px}
+.results{position:sticky;top:16px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.results{position:static}}
+.section{background:var(--gcard);border:1px solid var(--border);border-radius:1.25rem;padding:22px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.section h2{font-size:1.25rem;margin-bottom:14px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;flex-wrap:wrap}.sh h2{margin:0}
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.row3{grid-template-columns:repeat(3,minmax(0,1fr))}.row4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:600px){.row3,.row4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ig{margin-bottom:10px}
+.ig label{display:block;font-size:.8rem;font-weight:500;color:var(--muted);margin-bottom:3px}
+.iu{display:flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:.7rem;overflow:hidden}
+.iu:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--glow)}
+.iu .u{padding:0 8px;color:var(--muted);font-size:.9rem}
+.iu input{flex:1;min-width:0;border:0;background:transparent;color:var(--text);padding:8px 8px;font-size:.95rem;outline:none}
+select{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:.7rem;color:var(--text);font-size:.95rem}
+.btn{border:0;border-radius:.7rem;padding:8px 14px;font-weight:600;cursor:pointer;color:#fff;font-size:.9rem}
+.btn-add{background:var(--grad)}.btn-add:hover{filter:brightness(1.15)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-ghost:hover{border-color:var(--primary)}
+.btn-remove{background:transparent;color:var(--muted);font-size:1.1rem;padding:4px 10px}.btn-remove:hover{color:var(--danger)}
+.phase{background:var(--bg);border:1px solid var(--border);border-radius:1rem;padding:16px;margin-bottom:14px}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.phl{display:flex;align-items:center;gap:10px}
+.badge{width:30px;height:30px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:700}
+.toggle{display:flex;background:var(--card);border:1px solid var(--border);border-radius:.7rem;padding:3px}
+.toggle label{cursor:pointer}.toggle input{display:none}
+.toggle span{display:block;padding:5px 12px;border-radius:.5rem;font-size:.85rem;color:var(--muted)}
+.toggle input:checked+span{background:var(--grad);color:#fff}
+.chk{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);padding-top:22px;cursor:pointer}
+.chk input{accent-color:var(--primary);width:16px;height:16px}
+.divider{height:1px;background:var(--border);margin:10px 0 12px}
+.subt{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:8px;font-weight:600}
+.hidden{display:none!important}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:1rem;padding:14px;margin-bottom:14px}
+.card h3{font-size:.85rem;color:var(--muted);font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between}
+.mainv{display:flex;justify-content:space-between;align-items:baseline}
+.mainv .l{color:var(--muted);font-size:.9rem}.mainv .v{font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bar{height:8px;background:var(--card2);border-radius:4px;overflow:hidden;margin:6px 0 12px}.fill{height:100%;background:var(--grad);transition:width .4s}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.kv>div{background:var(--card);border:1px solid var(--border);border-radius:.7rem;padding:8px 10px}
+.kv .k{font-size:.75rem;color:var(--muted)}.kv .val{font-size:1.15rem;font-weight:700}
+.pos{color:var(--success)}.neg{color:var(--danger)}
+.bd h4{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.bdi{display:flex;justify-content:space-between;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border)}
+.bdi:last-child{border:0}.bdi b{color:var(--primary2)}
+.extra{font-size:.78rem;color:var(--muted);margin-top:6px}
+canvas{width:100%;height:220px;display:block}
+.how{font-size:.88rem;color:#c8c8d4}.how h3{color:var(--text);margin:12px 0 6px;font-size:1rem}.how li{margin:3px 0 3px 18px}.how code{background:var(--bg);padding:1px 5px;border-radius:4px;color:var(--primary2)}
+footer{text-align:center;color:var(--muted);padding:24px 0;font-size:.85rem}
+.legend{display:flex;gap:14px;font-size:.78rem;color:var(--muted);margin-bottom:4px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+@media(max-width:700px){#app{padding:14px}.section{padding:16px}.iu input,select{font-size:16px;min-height:44px}.btn{min-height:40px}.toggle span{padding:8px 12px}.chk input{width:22px;height:22px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="logo">📊 Calculadora Prop Firm</div>
+  <p class="tagline">Calculadora de Probabilidad para Cuentas de Fondeo</p>
+</header>
+<div class="layout">
+<div class="col">
+  <section class="section">
+    <h2>💰 Costes</h2>
+    <div class="row">
+      <div class="ig"><label>Evaluación</label><div class="iu"><span class="u">$</span><input type="number" id="evaluationCost" value="80" min="0" step="1"></div></div>
+      <div class="ig"><label>Activación</label><div class="iu"><span class="u">$</span><input type="number" id="activationCost" value="0" min="0" step="1"></div></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="sh"><h2>📋 Fases</h2><button class="btn btn-add" id="addPhaseBtn">+ Fase</button></div>
+    <div id="phasesContainer"></div>
+  </section>
+</div>
+<div class="results">
+  <section class="section">
+    <h2>📈 Resultados</h2>
+    <div class="card">
+      <div class="mainv"><span class="l">Probabilidad de Éxito</span><span class="v" id="aProb">--%</span></div>
+      <div class="bar"><div class="fill" id="aFill" style="width:0"></div></div>
+      <div class="kv"><div><div class="k">Retorno Esperado</div><div class="val" id="aER">--</div></div><div><div class="k">ROI</div><div class="val" id="aROI">--x</div></div></div>
+      <div class="bd" id="aBD"></div>
+    </div>
+    <canvas id="chart" width="720" height="440"></canvas>
+  </section>
+</div>
+</div>
+</div>
+
+<template id="phaseTpl">
+<div class="phase">
+  <div class="ph">
+    <div class="phl"><span class="badge"><span class="pn">1</span></span>
+      <div class="toggle">
+        <label><input type="radio" value="evaluation" checked><span>Evaluación</span></label>
+        <label><input type="radio" value="withdrawal"><span>Fondeada</span></label>
+      </div>
+    </div>
+    <button class="btn btn-remove" title="Eliminar fase">✕</button>
+  </div>
+  <div class="row row3">
+    <div class="ig"><label>Drawdown</label><div class="iu"><span class="u">$</span><input type="number" data-k="maxDrawdown" value="2000" min="0" step="100"></div></div>
+    <div class="ig"><label>Objetivo</label><div class="iu"><span class="u">$</span><input type="number" data-k="target" value="3000" min="0" step="100"></div></div>
+    <div class="ig"><label>Consistencia</label><div class="iu"><input type="number" data-k="consistency" value="50" min="0" max="100" step="5"><span class="u">%</span></div></div>
+  </div>
+  <div class="row">
+    <div class="ig"><label>Tipo DD</label><select data-k="drawdownType"><option value="eod">EOD</option><option value="trailing">Trailing</option><option value="static">Estático</option></select></div>
+    <label class="chk"><input type="checkbox" data-k="ddLocks" checked><span>DD se fija al superar DD inicial</span></label>
+  </div>
+  <div class="wf hidden">
+    <div class="divider"></div>
+    <div class="row row3">
+      <div class="ig"><label>Payout Cap</label><div class="iu"><input type="number" data-k="payoutCap" value="50" min="0" max="100" step="5"><span class="u">%</span></div></div>
+      <div class="ig"><label>Límite</label><div class="iu"><span class="u">$</span><input type="number" data-k="payoutLimit" value="1000" min="0" step="100"></div></div>
+      <div class="ig"><label>Split</label><div class="iu"><input type="number" data-k="split" value="80" min="0" max="100" step="5"><span class="u">%</span></div></div>
+    </div>
+  </div>
+</div>
+</template>
+
+<script>
+/*CORE-START*/
+var PropCore = (function () {
+  // ---------- Réplica exacta del modelo de calc.tradesfera.com ----------
+  function be(d, t) { return d <= 0 || t <= 0 ? 0 : d / (d + t); }       // DD EOD / estático
+  function xe(d, t) { return d <= 0 || t <= 0 ? 0 : Math.exp(-t / d); }   // DD trailing
+  function nDays(c) { return c <= 0 ? 1 : Math.ceil(100 / c); }
+
+  function evalPhase(p, idx) {
+    var D = p.maxDrawdown, T = p.target, c = p.consistency, locks = p.ddLocks, type = p.drawdownType;
+    var n = nDays(c), prob = 1, acc = 0, dd = D, days = [];
+    for (var u = 1; u <= n; u++) {
+      var f = c <= 0 ? T : Math.min(T * c / 100, T - acc);
+      var locked = type === "trailing" && locks && acc >= D;
+      var pr = type === "trailing" && !locked ? xe(dd, f) : be(dd, f);
+      prob *= pr;
+      days.push({ day: u, currentDD: dd, dailyTarget: f, cumulativeProfit: acc, survivalProbability: pr });
+      acc += f;
+      if (type === "static" || locked) dd = D + acc;
+      else if (type === "eod" && locks && acc >= D) dd = D + (acc - D);
+      else dd = D;
+    }
+    return { phaseIndex: idx, phaseName: "Fase " + (idx + 1) + " (Evaluación)", probability: prob, expectedReturn: 0, dailyBreakdown: days };
+  }
+
+  function withdrawalPhase(p, idx) {
+    var D = p.maxDrawdown, T = p.target, cap = p.payoutCap, lim = p.payoutLimit, split = p.split,
+        c = p.consistency, type = p.drawdownType, locks = p.ddLocks;
+    var days = [], n = nDays(c), prob = 1, dd = D, acc = 0;
+    if (n > 1) {
+      var w = T * c / 100;
+      for (var s = 1; s <= n; s++) {
+        var A = T - acc, P = Math.min(w, A);
+        if (P <= 0) break;
+        var locked = type === "trailing" && locks && acc >= D;
+        var pr = type === "trailing" && !locked ? xe(dd, P) : be(dd, P);
+        prob *= pr;
+        days.push({ day: s, currentDD: dd, dailyTarget: P, cumulativeProfit: acc, survivalProbability: pr });
+        acc += P;
+        dd = (type === "static" || locked) ? D + acc : D;
+      }
+    } else {
+      var pr1 = type === "trailing" ? xe(D, T) : be(D, T);
+      prob = pr1;
+      days.push({ day: 1, currentDD: D, dailyTarget: T, cumulativeProfit: 0, survivalProbability: pr1 });
+    }
+    var m = Math.min(T * (cap / 100), lim), b = m * (split / 100), x = T - m, y = T - x, v;
+    if (type === "trailing") v = x > 0 ? xe(x, y) : 0; else v = x > 0 ? be(x, y) : 0;
+    var k = 0;
+    if (v > 0 && v < 1) k = v * b / (1 - v);
+    return { phaseIndex: idx, phaseName: "Fase " + (idx + 1) + " (Retiro)", probability: prob, expectedReturn: b + k, dailyBreakdown: days,
+             firstPayoutNet: b, repeatProb: v };
+  }
+
+  // Igual que el sitio: cap/límite/split a 0 o vacío -> 50 / 1000 / 80
+  function siteSanitize(p) {
+    var q = Object.assign({}, p);
+    if (q.type === "withdrawal") { q.payoutCap = q.payoutCap || 50; q.payoutLimit = q.payoutLimit || 1000; q.split = q.split || 80; }
+    return q;
+  }
+
+  function analytic(cfg) {
+    var phases = [], total = 1, evalProb = 1, ret = 0;
+    cfg.phases.forEach(function (p0, i) {
+      var p = siteSanitize(p0), r;
+      if (p.type === "withdrawal") { r = withdrawalPhase(p, i); ret = r.expectedReturn; }
+      else { r = evalPhase(p, i); evalProb *= r.probability; }
+      phases.push(r); total *= r.probability;
+    });
+    var cost = cfg.evalCost + evalProb * cfg.activationCost;
+    var er = total * ret - cost;
+    return { phases: phases, totalProbability: total, expectedReturn: er, roi: cost > 0 ? er / cost : 0, cost: cost, grossReturnIfSuccess: ret };
+  }
+
+
+  return { analytic: analytic };
+})();
+if (typeof module !== "undefined") module.exports = PropCore;
+/*CORE-END*/
+</script>
+<script>
+(function () {
+  var C = PropCore, cont = document.getElementById("phasesContainer"), tpl = document.getElementById("phaseTpl"), uid = 0;
+  function addPhase(funded) {
+    var card = tpl.content.cloneNode(true).querySelector(".phase"), id = uid++;
+    card.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.name = "pt-" + id;
+      r.addEventListener("change", function () { card.querySelector(".wf").classList.toggle("hidden", r.value !== "withdrawal"); });
+    });
+    if (funded) { card.querySelector('input[value="withdrawal"]').checked = true; card.querySelector(".wf").classList.remove("hidden"); }
+    card.querySelector(".btn-remove").addEventListener("click", function () { card.remove(); renumber(); schedule(); });
+    cont.appendChild(card); renumber();
+  }
+  function renumber() { cont.querySelectorAll(".phase").forEach(function (c, i) { c.querySelector(".pn").textContent = i + 1; }); }
+  function v(card, k) { return parseFloat(card.querySelector('[data-k="' + k + '"]').value) || 0; }
+  function readPhase(card) {
+    return { type: card.querySelector('input[value="withdrawal"]').checked ? "withdrawal" : "evaluation",
+      maxDrawdown: v(card, "maxDrawdown"), target: v(card, "target"), consistency: v(card, "consistency"),
+      drawdownType: card.querySelector('[data-k="drawdownType"]').value, ddLocks: card.querySelector('[data-k="ddLocks"]').checked,
+      payoutCap: v(card, "payoutCap"), payoutLimit: v(card, "payoutLimit"), split: v(card, "split") };
+  }
+  function money(x) { return (x < 0 ? "−$" : "$") + Math.abs(x).toFixed(2); }
+  function drawChart(phases) {
+    var cv = document.getElementById("chart"), ctx = cv.getContext("2d"), W = cv.width, H = cv.height;
+    ctx.clearRect(0, 0, W, H);
+    var L = 60, R = 16, Tp = 16, B = 50, ph = H - Tp - B, pw = W - L - R;
+    ctx.font = "20px Inter, sans-serif"; ctx.strokeStyle = "#2a2a3a"; ctx.lineWidth = 1;
+    for (var g = 0; g <= 100; g += 20) {
+      var y = Tp + ph - ph * g / 100;
+      ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(W - R, y); ctx.stroke();
+      ctx.fillStyle = "#8888a0"; ctx.textAlign = "right"; ctx.fillText(g + "%", L - 8, y + 6);
+    }
+    var n = phases.length; if (!n) return;
+    var slot = pw / n, bw = Math.min(90, slot * 0.6);
+    phases.forEach(function (p, i) {
+      var cx = L + slot * i + slot / 2, h = ph * p.probability, x = cx - bw / 2;
+      ctx.fillStyle = "hsl(" + (250 + i * 30) + ", 70%, 60%)"; ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, Tp + ph - h, bw, h, 8); else ctx.rect(x, Tp + ph - h, bw, h);
+      ctx.fill();
+      ctx.fillStyle = "#e0e0e8"; ctx.textAlign = "center"; ctx.font = "18px Inter, sans-serif";
+      ctx.fillText((p.probability * 100).toFixed(2) + "%", cx, Tp + ph - h - 6);
+      ctx.fillStyle = "#8888a0"; ctx.font = "19px Inter, sans-serif"; ctx.fillText(p.phaseName, cx, H - 18);
+    });
+  }
+  function calc() {
+    var cards = cont.querySelectorAll(".phase"); if (!cards.length) return;
+    var r = C.analytic({ evalCost: parseFloat(document.getElementById("evaluationCost").value) || 0,
+      activationCost: parseFloat(document.getElementById("activationCost").value) || 0,
+      phases: Array.prototype.map.call(cards, readPhase) });
+    var t = r.totalProbability * 100;
+    document.getElementById("aProb").textContent = t.toFixed(2) + "%";
+    document.getElementById("aFill").style.width = Math.min(100, t) + "%";
+    var e = document.getElementById("aER"); e.textContent = money(r.expectedReturn); e.className = "val " + (r.expectedReturn >= 0 ? "pos" : "neg");
+    var o = document.getElementById("aROI"); o.textContent = r.roi.toFixed(2) + "x"; o.className = "val " + (r.roi >= 0 ? "pos" : "neg");
+    var bd = document.getElementById("aBD"); bd.innerHTML = "<h4>Desglose por Fase</h4>";
+    r.phases.forEach(function (p) { bd.innerHTML += '<div class="bdi"><span>' + p.phaseName + "</span><b>" + (p.probability * 100).toFixed(2) + "%</b></div>"; });
+    drawChart(r.phases);
+  }
+  var tmr; function schedule() { clearTimeout(tmr); tmr = setTimeout(calc, 300); }
+  document.getElementById("addPhaseBtn").addEventListener("click", function () { addPhase(false); schedule(); });
+  document.getElementById("app").addEventListener("input", schedule);
+  document.getElementById("app").addEventListener("change", schedule);
+  addPhase(false); addPhase(true); calc();
+})();
+</script>
+</body>
+</html>
