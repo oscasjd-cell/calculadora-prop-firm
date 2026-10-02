@@ -88,8 +88,8 @@ footer{text-align:center;color:var(--muted);padding:24px 0;font-size:.85rem}
 <div class="col">
   <section class="section">
     <h2>⚡ Escenario de los días chicos</h2>
-    <div class="scen"><button class="btn btn-ghost on" id="scBT">Backtest (90%)</button><button class="btn btn-ghost" id="scPR">Prudente (84%)</button><button class="btn btn-ghost" id="scReset">Restaurar todo</button></div>
-    <span class="hint" style="margin-top:8px">Backtest: 90.45% TP / 7.30% SL / 2.25% manual (TradingView avisó de posible look-ahead). Prudente: 84% / 14% / 2%.</span>
+    <div class="scen"><button class="btn btn-ghost on" id="scBT">Backtest (90%)</button><button class="btn btn-ghost" id="scPR">Prudente (84%)</button><button class="btn btn-ghost" id="scBB">Bollinger 20/3 (92%)</button><button class="btn btn-ghost" id="scReset">Restaurar todo</button></div>
+    <span class="hint" style="margin-top:8px">Backtest: 90.45% TP / 7.30% SL / 2.25% manual (TradingView avisó de posible look-ahead). Prudente: 84% / 14% / 2%. Bollinger 20/3 (toque, 10–11 ET, SL 160, sin órdenes hasta 10:03 en días con dato a las 10:00, backtest Python dic-2025→sep-2026, 118 trades): 92.4% TP (+$186,12) / 5.9% SL (−$1.934,88) / 1.7% manual (−$868), netos de comisión.</span>
   </section>
 
   <section class="section">
@@ -246,7 +246,11 @@ var PlanCore = (function () {
     small: { tp: 193.56, sl: 2008.44, pTP: 90.45, pSL: 7.30, manual: -589.44, com: 0 },
     funded: { mll: 2000, lock: 100, buffer: 2100, minW: 500, split: 90, policy: 1, smallBefore: 4, maxDays: 60 }
   };
-  var SCEN = { backtest: { pTP: 90.45, pSL: 7.30 }, prudente: { pTP: 84, pSL: 14 } };
+  var SCEN = {
+    backtest: { tp: 193.56, sl: 2008.44, pTP: 90.45, pSL: 7.30, manual: -589.44, com: 0 },
+    prudente: { tp: 193.56, sl: 2008.44, pTP: 84, pSL: 14, manual: -589.44, com: 0 },
+    bollinger: { tp: 186.12, sl: 1934.88, pTP: 92.4, pSL: 5.9, manual: -868, com: 0 } // BB 20/3 toque, SL 160 pts, 6 MNQ, netos de $14,88
+  };
   return { run: run, simEval: simEval, simFunded: simFunded, DEFAULTS: DEFAULTS, SCEN: SCEN };
 })();
 if (typeof module !== "undefined") module.exports = PlanCore;
@@ -289,8 +293,8 @@ function fill(){var map={price:D.price,sims:D.sims};
  ['target','mll','cons','minDays'].forEach(function(k){map['e_'+k]=D.eval[k];});
  ['mll','lock','buffer','minW','split','smallBefore','maxDays'].forEach(function(k){map['f_'+k]=D.funded[k];});
  Object.keys(map).forEach(function(k){g(k).value=map[k];});g('f_policy').value=String(D.funded.policy);}
-function scen(k){g('s_pTP').value=C.SCEN[k].pTP;g('s_pSL').value=C.SCEN[k].pSL;g('scBT').classList.toggle('on',k==='backtest');g('scPR').classList.toggle('on',k==='prudente');calc();}
-g('scBT').onclick=function(){scen('backtest');};g('scPR').onclick=function(){scen('prudente');};
+function scen(k){var s=C.SCEN[k];['tp','sl','pTP','pSL','manual','com'].forEach(function(f){g('s_'+f).value=s[f];});g('scBT').classList.toggle('on',k==='backtest');g('scPR').classList.toggle('on',k==='prudente');g('scBB').classList.toggle('on',k==='bollinger');calc();}
+g('scBT').onclick=function(){scen('backtest');};g('scPR').onclick=function(){scen('prudente');};g('scBB').onclick=function(){scen('bollinger');};
 g('scReset').onclick=function(){fill();scen('backtest');};
 var t;function sch(){clearTimeout(t);t=setTimeout(calc,350);}
 g('app').addEventListener('input',sch);g('app').addEventListener('change',sch);
