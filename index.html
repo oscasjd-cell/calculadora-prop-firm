@@ -97,7 +97,7 @@ footer{text-align:center;color:var(--muted);padding:24px 0;font-size:.85rem}
     <div class="row"><div class="ig"><label for="price">Precio de la Evaluación</label><div class="iu"><span class="u">$</span><input type="number" id="price" value="146" step="any"></div><span class="hint">Lo que pagas por cada intento (~$105 con código)</span></div></div>
     <div class="blk"><h3>Reglas de la Evaluación</h3><p class="d">Lo que pide LucidFlex 50K para aprobar (sin límite diario de pérdida).</p>
       <div class="row row4"><div class="ig"><label for="e_target">Objetivo</label><div class="iu"><span class="u">$</span><input type="number" id="e_target" value="3000" step="any"></div><span class="hint">Ganancia para aprobar</span></div><div class="ig"><label for="e_mll">Pérdida máxima (MLL)</label><div class="iu"><span class="u">$</span><input type="number" id="e_mll" value="2000" step="any"></div><span class="hint">Trailing fin de día (EOD)</span></div><div class="ig"><label for="e_cons">Consistencia</label><div class="iu"><input type="number" id="e_cons" value="50" step="any"><span class="u">%</span></div><span class="hint">Ningún día > este % del total</span></div><div class="ig"><label for="e_minDays">Días mínimos</label><div class="iu"><input type="number" id="e_minDays" value="2" step="any"></div><span class="hint">Días operados para aprobar</span></div></div></div>
-    <div class="blk"><h3>Trade diario de la Evaluación</h3><p class="d">10 MNQ · TP 77 pts / SL 97 pts · 1 trade al día · backtest 184 días.</p>
+    <div class="blk"><h3>Trade diario de la Evaluación</h3><p class="d">10 MNQ · TP 77 pts / SL 97 pts · 1 trade al día · backtest 184 días.<br><b>Eval: hay que ganar 2 días seguidos; un stop = Eval perdida.</b></p>
 <div class="row"><div class="ig"><label for="e_tp">Ganancia si toca TP</label><div class="iu"><span class="u">$</span><input type="number" id="e_tp" value="1540" step="any"></div><span class="hint">Dólares que ganas el día que sale el take profit</span></div><div class="ig"><label for="e_sl">Pérdida si toca SL</label><div class="iu"><span class="u">$</span><input type="number" id="e_sl" value="1940" step="any"></div><span class="hint">Dólares que pierdes el día que salta el stop</span></div></div>
 <div class="row row3"><div class="ig"><label for="e_pTP">% días TP</label><div class="iu"><input type="number" id="e_pTP" value="54.35" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan TP</span></div><div class="ig"><label for="e_pSL">% días SL</label><div class="iu"><input type="number" id="e_pSL" value="36.96" step="any"><span class="u">%</span></div><span class="hint">De cada 100 días, cuántos tocan SL</span></div><div class="ig"><label>% cierre manual</label><div class="iu"><input type="text" id="e_pman" readonly tabindex="-1"><span class="u">%</span></div><span class="hint">Se calcula solo: 100 − TP − SL</span></div></div>
 <div class="row"><div class="ig"><label for="e_manual">Resultado medio cierre manual</label><div class="iu"><span class="u">$</span><input type="number" id="e_manual" value="-444" step="any"></div><span class="hint">Días que no tocan ni TP ni SL y se cierran a las 15:45 ET (media del backtest: −22,2 pts)</span></div><div class="ig"><label for="e_com">Comisión por día</label><div class="iu"><span class="u">$</span><input type="number" id="e_com" value="24.8" step="any"></div><span class="hint">Se resta cada día operado (ida y vuelta)</span></div></div></div>
@@ -124,7 +124,7 @@ footer{text-align:center;color:var(--muted);padding:24px 0;font-size:.85rem}
     <dl>
       <dt>Precio de la Evaluación</dt><dd>Lo que pagas por cada intento. La LucidFlex 50K cuesta $146; con código sale ~$105.</dd>
       <dt>Objetivo / Pérdida máxima (MLL) / Consistencia / Días mínimos</dt><dd>Para aprobar hay que ganar $3.000 sin bajar $2.000 desde el mejor cierre diario, y ningún día puede aportar más del 50% de la ganancia (con 2 días TP se aprueba). Si un día pesa demasiado, no suspendes: sigues operando hasta cumplirlo. Sin límite diario de pérdida.</dd>
-      <dt>Ganancia TP / Pérdida SL</dt><dd>Lo que ganas o pierdes el día que el precio toca tu take profit o tu stop. Se opera una vez al día.</dd>
+      <dt>Ganancia TP / Pérdida SL</dt><dd>Lo que ganas o pierdes el día que el precio toca tu take profit o tu stop. Se opera una vez al día. En la Evaluación un stop = Eval perdida (se abandona y se compra otra, aunque la cuenta siga viva por ~$35); un cierre manual suma su resultado y se sigue (si ya no llegan 2 TP a $3.000, hace falta otro TP).</dd>
       <dt>% días TP / % días SL / % cierre manual</dt><dd>Frecuencias del backtest. Los días que no tocan ni TP ni SL se cierran a mano con el resultado medio indicado.</dd>
       <dt>Comisión por día</dt><dd>Coste de entrar y salir: ~$2,48 por micro ida y vuelta → 10 MNQ ≈ $24,80. Los días chicos ya vienen netos (comisión 0 aquí).</dd>
       <dt>Día colchón</dt><dd>El primer día de la fondeada se busca +$2.000 de golpe. Si cierra a mano, se repite al día siguiente; si toca SL, la cuenta muere. Cuenta como uno de los 5 días ganadores.</dd>
@@ -167,10 +167,12 @@ var PlanCore = (function () {
     return { k: "man", d: b.manual - b.com };
   }
   // EVALUACIÓN LucidFlex: MLL trailing EOD (sube con el mejor cierre diario). Muere si el cierre <= límite.
+  // Nuestro plan: un día SL = Eval perdida (se abandona y se compra otra). Un día manual suma su resultado y se sigue.
   function simEval(c, r) {
     var e = c.eval, pnl = 0, peak = 0, floor = -e.mll, best = 0;
     for (var d = 1; d <= 300; d++) {
       var o = day(e, r);
+      if (o.k === "sl") return { pass: false, days: d };
       pnl += o.d;
       if (pnl <= floor) return { pass: false, days: d };
       if (o.d > best) best = o.d;
